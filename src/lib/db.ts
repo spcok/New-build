@@ -1,15 +1,13 @@
 import { PGlite } from '@electric-sql/pglite';
 import { electricSync } from '@electric-sql/pglite-sync';
 
-// 1. Initialize the offline-first WebAssembly Postgres database
-// Bumping to v3 to guarantee a clean build in IndexedDB
-export const pg = new PGlite('idb://vetaura-vault-v3', {
+// Bumped to v4 to completely sidestep the HMR corruption
+export const pg = new PGlite('idb://vetaura-vault-v4', {
   extensions: {
     sync: electricSync(),
   },
 });
 
-// 2. Wrap in a standard db.query interface for TanStack Query mutations later
 export const db = {
   pg,
   query: async (queryText: string, params?: any[]) => {
@@ -21,7 +19,6 @@ export const db = {
   }
 };
 
-// 3. Scaffold the complete V3 schema to match the Supabase cloud exact shape
 pg.waitReady.then(() => {
   pg.exec(`
     CREATE TABLE IF NOT EXISTS animals (
